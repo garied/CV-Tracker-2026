@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Tracker - Phantom Cloud Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700;900&family=Montserrat:ital,wght@0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        p5red: '#E50012',
+                        p5yellow: '#FDE047',
+                        p5dark: '#000000'
+                    },
+                    fontFamily: {
+                        'header': ['Oswald', 'sans-serif'],
+                        'body': ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: #111; border-left: 2px solid #E50012; }
+        ::-webkit-scrollbar-thumb { background: #E50012; border: 2px solid #111; }
+        ::-webkit-scrollbar-thumb:hover { background: #fff; }
+
+        body {
+            background-color: #E50012;
+            background-image: url('data:image/svg+xml;utf8,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="2" fill="%23000000" fill-opacity="0.2"/></svg>');
+        }
+
+        .p5-shadow { box-shadow: 6px 6px 0px 0px #000; }
+        .p5-shadow-red { box-shadow: 6px 6px 0px 0px #E50012; }
+        .p5-shadow-white { box-shadow: 6px 6px 0px 0px #FFF; }
+        
+        .p5-shadow-hover:hover {
+            box-shadow: 2px 2px 0px 0px #000;
+            transform: translate(4px, 4px) skewX(-12deg);
+        }
+
+        .p5-input {
+            border: 4px solid #000;
+            background-color: #fff;
+            border-radius: 0;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            transition: all 0.1s;
+        }
+        
+        .p5-input:focus {
+            outline: none;
+            border-color: #E50012;
+            box-shadow: 6px 6px 0px 0px #000;
+            transform: translate(-2px, -2px);
+        }
+
+        .p5-cutout { background: #000; color: #fff; display: inline-block; padding: 2px 10px; transform: skewX(-10deg); }
+        .p5-cutout-red { background: #E50012; color: #fff; display: inline-block; padding: 2px 10px; transform: skewX(-10deg); }
+
+        .toast-enter { animation: slashIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .toast-leave { animation: slashOut 0.3s ease-in forwards; }
+        
+        @keyframes slashIn {
+            from { transform: translateX(100%) skewX(-20deg); opacity: 0; }
+            to { transform: translateX(0) skewX(0); opacity: 1; }
+        }
+        @keyframes slashOut {
+            from { transform: translateX(0) skewX(0); opacity: 1; }
+            to { transform: translateX(100%) skewX(20deg); opacity: 0; }
+        }
+
+        /* Pulse animation for network status */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(229, 0, 18, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(229, 0, 18, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(229, 0, 18, 0); }
+        }
+        .network-active {
+            border-radius: 50%;
+            animation: pulse-red 2s infinite;
+        }
+    </style>
+</head>
+<body class="font-body text-p5dark min-h-screen pb-12">
+
+    <nav class="bg-black text-white sticky top-0 z-50 border-b-8 border-p5red p5-shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between h-auto sm:h-20 py-4 sm:py-0">
+                <div class="flex items-center transform -skew-x-12 bg-white text-black px-4 py-1 border-4 border-black p5-shadow-red mb-4 sm:mb-0">
+                    <i class="fa-solid fa-mask text-3xl mr-3 text-p5red"></i>
+                    <span class="font-header italic font-black text-3xl tracking-widest uppercase mt-1">CV Tracker</span>
+                </div>
+                
+                <div class="flex items-center gap-6">
+                    <div id="networkStatus" class="flex items-center gap-2 transform skew-x-12 opacity-50 transition-opacity">
+                        <div class="w-3 h-3 bg-p5red network-active" id="networkIndicator"></div>
+                        <span class="font-header italic tracking-wider text-sm uppercase" id="networkText">Connecting...</span>
+                    </div>
+
+                    <button id="addNewBtn" class="bg-p5red text-white border-4 border-white px-6 py-2 font-header italic font-bold text-xl uppercase transform -skew-x-12 p5-shadow hover:bg-white hover:text-p5red hover:border-black transition-all p5-shadow-hover opacity-50 cursor-not-allowed" disabled>
+                        <i class="fa-solid fa-bolt mr-2"></i> New Target
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <div class="bg-black text-white border-4 border-p5red p-6 transform rotate-1 p5-shadow-white relative overflow-hidden">
+                <i class="fa-solid fa-crosshairs absolute -bottom-4 -right-4 text-8xl text-white opacity-10"></i>
+                <h3 class="font-header italic text-xl uppercase tracking-wider p5-cutout-red mb-2">Total Intel</h3>
+                <p id="totalCvsCount" class="text-6xl font-header font-black mt-2">0</p>
+            </div>
+            <div class="bg-white text-black border-4 border-black p-6 transform -rotate-1 p5-shadow relative overflow-hidden">
+                <i class="fa-solid fa-ship absolute -bottom-4 -right-4 text-8xl text-black opacity-10"></i>
+                <h3 class="font-header italic text-xl uppercase tracking-wider p5-cutout mb-2">PCL</h3>
+                <p id="pclCount" class="text-5xl font-header font-black text-p5red mt-2">0</p>
+            </div>
+            <div class="bg-white text-black border-4 border-black p-6 transform rotate-2 p5-shadow relative overflow-hidden">
+                <i class="fa-solid fa-ship absolute -bottom-4 -right-4 text-8xl text-black opacity-10"></i>
+                <h3 class="font-header italic text-xl uppercase tracking-wider p5-cutout mb-2">HAL</h3>
+                <p id="halCount" class="text-5xl font-header font-black text-p5red mt-2">0</p>
+            </div>
+            <div class="bg-white text-black border-4 border-black p-6 transform -rotate-2 p5-shadow relative overflow-hidden">
+                <i class="fa-solid fa-ship absolute -bottom-4 -right-4 text-8xl text-black opacity-10"></i>
+                <h3 class="font-header italic text-xl uppercase tracking-wider p5-cutout mb-2">Viking Ocean</h3>
+                <p id="vikingCount" class="text-5xl font-header font-black text-p5red mt-2">0</p>
+            </div>
+        </div>
+
+        <div class="bg-p5yellow border-4 border-black p-4 p5-shadow mb-8 flex flex-col md:flex-row justify-between items-center gap-4 transform skew-x-1">
+            <div class="relative w-full md:w-1/3 transform -skew-x-2">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fa-solid fa-search text-black text-lg"></i>
+                </div>
+                <input type="text" id="searchInput" class="block w-full pl-10 pr-3 py-3 p5-input text-lg uppercase font-header tracking-wide" placeholder="Locate Target...">
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto transform -skew-x-2">
+                <select id="filterShip" class="block w-full sm:w-48 py-3 px-4 p5-input text-lg font-header uppercase cursor-pointer">
+                    <option value="All">All Ships</option>
+                    <option value="PCL">PCL</option>
+                    <option value="HAL">HAL</option>
+                    <option value="Viking Ocean">Viking Ocean</option>
+                </select>
+                <select id="filterStatus" class="block w-full sm:w-56 py-3 px-4 p5-input text-lg font-header uppercase cursor-pointer">
+                    <option value="All">All Status</option>
+                    <option value="Pending Mega">Pending Mega</option>
+                    <option value="Endorsed from Mega">Endorsed from Mega</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="bg-white border-8 border-black p5-shadow mb-6 relative z-10 overflow-hidden">
+            <div class="overflow-x-auto min-h-[300px]">
+                <table class="min-w-full border-collapse">
+                    <thead class="bg-black text-white font-header italic text-xl uppercase">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 text-left border-b-4 border-p5red tracking-wider">Codename / Target</th>
+                            <th scope="col" class="px-6 py-4 text-left border-b-4 border-p5red tracking-wider hidden sm:table-cell">Contact</th>
+                            <th scope="col" class="px-6 py-4 text-left border-b-4 border-p5red tracking-wider">Position & Ship</th>
+                            <th scope="col" class="px-6 py-4 text-left border-b-4 border-p5red tracking-wider hidden md:table-cell">Endorse Mega (To/From)</th>
+                            <th scope="col" class="px-6 py-4 text-left border-b-4 border-p5red tracking-wider">Status</th>
+                            <th scope="col" class="px-6 py-4 text-right border-b-4 border-p5red tracking-wider">Execute</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cvTableBody" class="bg-white">
+                        </tbody>
+                </table>
+                
+                <div id="loadingState" class="text-center py-16 bg-white">
+                    <i class="fa-solid fa-spinner fa-spin text-5xl text-p5red mb-4"></i>
+                    <h3 class="font-header italic text-2xl text-black uppercase">Syncing with Meta-Verse...</h3>
+                </div>
+
+                <div id="emptyState" class="hidden text-center py-16 bg-gray-100">
+                    <i class="fa-solid fa-ghost text-6xl text-black mb-4 opacity-50 transform -skew-x-12"></i>
+                    <h3 class="font-header italic text-3xl text-black uppercase">No Targets Found</h3>
+                    <p class="mt-2 text-lg text-gray-700 font-bold">The palace is currently empty.</p>
+                    <div class="mt-6">
+                        <button id="emptyStateAddBtn" class="hidden bg-p5red text-white border-4 border-black px-6 py-2 font-header italic font-bold text-xl uppercase transform -skew-x-12 p5-shadow hover:bg-black transition-all p5-shadow-hover">
+                            <i class="fa-solid fa-plus mr-2"></i> Add Target
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="cvModal" class="fixed z-50 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-black bg-opacity-90 transition-opacity" aria-hidden="true" id="modalOverlay" style="background-image: radial-gradient(#E50012 15%, transparent 16%); background-size: 20px 20px;"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white border-8 border-black transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full rotate-1 p5-shadow-red relative z-10 text-left">
+                <div class="bg-black p-4 border-b-8 border-p5red relative overflow-hidden">
+                    <i class="fa-solid fa-star absolute -top-4 -right-4 text-8xl text-white opacity-10 transform rotate-45"></i>
+                    <h3 class="font-header italic text-4xl text-white uppercase tracking-widest transform -skew-x-12 inline-block ml-2 mt-2" id="modal-title-container">
+                        <span class="bg-p5red px-4 py-1" id="modal-title">NEW INTEL</span>
+                    </h3>
+                </div>
+                <div class="px-6 pt-6 pb-8 bg-white" style="background-image: url('data:image/svg+xml;utf8,<svg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M0 40L40 0H20L0 20M40 40V20L20 40\' fill=\'%23f3f4f6\' fill-opacity=\'1\'/></svg>');">
+                    <form id="cvForm" class="space-y-6 relative z-10">
+                        <input type="hidden" id="cvId">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="transform -skew-x-2">
+                                <label for="firstName" class="block font-header italic text-xl uppercase font-bold text-black mb-1"><span class="p5-cutout">First Name</span> <span class="text-p5red">*</span></label>
+                                <input type="text" name="firstName" id="firstName" required class="block w-full p-3 p5-input text-lg">
+                            </div>
+                            <div class="transform skew-x-1">
+                                <label for="lastName" class="block font-header italic text-xl uppercase font-bold text-black mb-1"><span class="p5-cutout">Last Name</span> <span class="text-p5red">*</span></label>
+                                <input type="text" name="lastName" id="lastName" required class="block w-full p-3 p5-input text-lg">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="transform skew-x-1">
+                                <label for="phoneNumber" class="block font-header italic text-xl uppercase font-bold text-black mb-1"><span class="p5-cutout">Phone</span> <span class="text-p5red">*</span></label>
+                                <input type="tel" name="phoneNumber" id="phoneNumber" required class="block w-full p-3 p5-input text-lg">
+                            </div>
+                            <div class="transform -skew-x-2">
+                                <label for="email" class="block font-header italic text-xl uppercase font-bold text-black mb-1"><span class="p5-cutout">Email</span></label>
+                                <input type="email" name="email" id="email" class="block w-full p-3 p5-input text-lg">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 bg-p5yellow border-4 border-black transform rotate-1">
+                            <div class="transform -rotate-1 -skew-x-1">
+                                <label for="position" class="block font-header italic text-xl uppercase font-bold text-black mb-1"><span class="p5-cutout">Position</span> <span class="text-p5red">*</span></label>
+                                <input type="text" name="position" id="position" required class="block w-full p-3 p5-input text-lg">
+                            </div>
+                            <div class="transform -rotate-1 skew-x-1">
+                                <label for="ship" class="block font-header italic text-xl uppercase font-bold text-black mb-1"><span class="p5-cutout">Ship</span> <span class="text-p5red">*</span></label>
+                                <select id="ship" name="ship" required class="block w-full p-3 p5-input text-lg cursor-pointer">
+                                    <option value="" disabled selected>Select a target...</option>
+                                    <option value="PCL">PCL</option>
+                                    <option value="HAL">HAL</option>
+                                    <option value="Viking Ocean">Viking Ocean</option>
+                                </select>
+                            </div>
+                        </div>
