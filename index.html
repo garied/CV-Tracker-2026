@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Persona 5 Vibe Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700;900&family=Montserrat:ital,wght@0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
@@ -30,7 +29,6 @@
         }
     </script>
     <style>
-        /* Custom scrollbar */
         ::-webkit-scrollbar { width: 12px; height: 12px; }
         ::-webkit-scrollbar-track { background: #111; border-left: 2px solid #E50012; }
         ::-webkit-scrollbar-thumb { background: #E50012; border: 2px solid #111; }
@@ -94,7 +92,6 @@
 </head>
 <body class="font-body text-p5dark min-h-screen pb-12">
 
-    <!-- Navigation -->
     <nav class="bg-black text-white sticky top-0 z-50 border-b-8 border-p5red p5-shadow">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col sm:flex-row items-center justify-between h-auto sm:h-20 py-4 sm:py-0">
@@ -119,7 +116,6 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
             <div class="bg-black text-white border-4 border-p5red p-6 transform rotate-1 p5-shadow-white relative overflow-hidden">
                 <i class="fa-solid fa-crosshairs absolute -bottom-4 -right-4 text-8xl text-white opacity-10"></i>
@@ -143,7 +139,6 @@
             </div>
         </div>
 
-        <!-- Controls -->
         <div class="bg-p5yellow border-4 border-black p-4 p5-shadow mb-8 flex flex-col md:flex-row justify-between items-center gap-4 transform skew-x-1">
             <div class="relative w-full md:w-1/3 transform -skew-x-2">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -166,7 +161,6 @@
             </div>
         </div>
 
-        <!-- Data Table -->
         <div class="bg-white border-8 border-black p5-shadow mb-6 relative z-10 overflow-hidden">
             <div class="overflow-x-auto min-h-[300px]">
                 <table class="min-w-full border-collapse">
@@ -203,7 +197,6 @@
         </div>
     </main>
 
-    <!-- Modal for Add/Edit CV -->
     <div id="cvModal" class="fixed z-50 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-black bg-opacity-90 transition-opacity" aria-hidden="true" id="modalOverlay" style="background-image: radial-gradient(#E50012 15%, transparent 16%); background-size: 20px 20px;"></div>
@@ -278,7 +271,6 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="fixed z-50 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-black bg-opacity-90 transition-opacity" aria-hidden="true" style="background-image: radial-gradient(#E50012 15%, transparent 16%); background-size: 20px 20px;"></div>
@@ -306,14 +298,13 @@
 
     <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-4 pointer-events-none"></div>
 
-    <!-- FIREBASE CLOUD STORAGE LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBGqY0l_B0bsOxnZ3jMC-4cwePXqj1c00",
+            apiKey: "AIzaSyBYGqY0l_B0bsOxnZ3jMC-4cwePXqj1c00",
             authDomain: "cv-tracker-2026.firebaseapp.com",
             databaseURL: "https://cv-tracker-2026-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "cv-tracker-2026",
