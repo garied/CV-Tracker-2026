@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
+    <!-- Persona 5 Vibe Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700;900&family=Montserrat:ital,wght@0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
@@ -80,7 +81,6 @@
             to { transform: translateX(100%) skewX(20deg); opacity: 0; }
         }
 
-        /* Pulse animation for network status */
         @keyframes pulse-red {
             0% { box-shadow: 0 0 0 0 rgba(229, 0, 18, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(229, 0, 18, 0); }
@@ -94,6 +94,7 @@
 </head>
 <body class="font-body text-p5dark min-h-screen pb-12">
 
+    <!-- Navigation -->
     <nav class="bg-black text-white sticky top-0 z-50 border-b-8 border-p5red p5-shadow">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col sm:flex-row items-center justify-between h-auto sm:h-20 py-4 sm:py-0">
@@ -118,6 +119,7 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
+        <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
             <div class="bg-black text-white border-4 border-p5red p-6 transform rotate-1 p5-shadow-white relative overflow-hidden">
                 <i class="fa-solid fa-crosshairs absolute -bottom-4 -right-4 text-8xl text-white opacity-10"></i>
@@ -141,6 +143,7 @@
             </div>
         </div>
 
+        <!-- Controls -->
         <div class="bg-p5yellow border-4 border-black p-4 p5-shadow mb-8 flex flex-col md:flex-row justify-between items-center gap-4 transform skew-x-1">
             <div class="relative w-full md:w-1/3 transform -skew-x-2">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -163,6 +166,7 @@
             </div>
         </div>
 
+        <!-- Data Table -->
         <div class="bg-white border-8 border-black p5-shadow mb-6 relative z-10 overflow-hidden">
             <div class="overflow-x-auto min-h-[300px]">
                 <table class="min-w-full border-collapse">
@@ -177,7 +181,7 @@
                         </tr>
                     </thead>
                     <tbody id="cvTableBody" class="bg-white">
-                        </tbody>
+                    </tbody>
                 </table>
                 
                 <div id="loadingState" class="text-center py-16 bg-white">
@@ -199,6 +203,7 @@
         </div>
     </main>
 
+    <!-- Modal for Add/Edit CV -->
     <div id="cvModal" class="fixed z-50 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-black bg-opacity-90 transition-opacity" aria-hidden="true" id="modalOverlay" style="background-image: radial-gradient(#E50012 15%, transparent 16%); background-size: 20px 20px;"></div>
@@ -248,3 +253,453 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+                            <div class="transform -skew-x-2">
+                                <label for="dateToMega" class="block font-header italic text-xl uppercase font-bold text-black mb-1"><span class="p5-cutout">Endorse To Mega</span></label>
+                                <input type="date" name="dateToMega" id="dateToMega" class="block w-full p-3 p5-input text-lg">
+                            </div>
+                            <div class="transform skew-x-1">
+                                <label for="dateFromMega" class="block font-header italic text-xl uppercase font-bold text-black mb-1"><span class="p5-cutout">Endorsed From Mega</span></label>
+                                <input type="date" name="dateFromMega" id="dateFromMega" class="block w-full p-3 p5-input text-lg">
+                                <p class="mt-2 text-sm font-bold text-p5red bg-black inline-block px-2 py-1 transform -skew-x-6">Leave blank if pending</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-gray-200 px-6 py-4 flex flex-col sm:flex-row-reverse border-t-8 border-black gap-4">
+                    <button type="button" id="saveCvBtn" class="w-full sm:w-auto bg-p5red text-white border-4 border-black px-8 py-3 font-header italic font-black text-2xl uppercase transform -skew-x-6 p5-shadow hover:bg-black hover:text-p5red transition-all p5-shadow-hover">
+                        Save Intel
+                    </button>
+                    <button type="button" id="cancelBtn" class="w-full sm:w-auto bg-white text-black border-4 border-black px-8 py-3 font-header italic font-bold text-2xl uppercase transform skew-x-6 p5-shadow hover:bg-gray-300 transition-all">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed z-50 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-black bg-opacity-90 transition-opacity" aria-hidden="true" style="background-image: radial-gradient(#E50012 15%, transparent 16%); background-size: 20px 20px;"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white border-8 border-black transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full -rotate-2 p5-shadow-red relative z-10">
+                <div class="bg-black p-4 border-b-8 border-p5red">
+                    <h3 class="font-header italic text-3xl text-white uppercase tracking-widest transform -skew-x-12 inline-block">
+                        <span class="bg-p5red px-4 py-1"><i class="fa-solid fa-triangle-exclamation mr-2"></i> DELETE TARGET</span>
+                    </h3>
+                </div>
+                <div class="bg-white px-6 pt-6 pb-6">
+                    <p class="text-xl font-body font-bold text-black text-center mt-4 mb-4">Are you sure you want to erase this target from the cloud? <br><span class="text-p5red">This action cannot be undone.</span></p>
+                </div>
+                <div class="bg-gray-200 px-6 py-4 flex flex-col sm:flex-row-reverse border-t-8 border-black gap-4">
+                    <button type="button" id="confirmDeleteBtn" class="w-full sm:w-auto bg-black text-p5red border-4 border-p5red px-8 py-3 font-header italic font-black text-2xl uppercase transform -skew-x-6 p5-shadow-red hover:bg-p5red hover:text-black transition-all p5-shadow-hover flex items-center justify-center">
+                        Erase
+                    </button>
+                    <button type="button" id="cancelDeleteBtn" class="w-full sm:w-auto bg-white text-black border-4 border-black px-8 py-3 font-header italic font-bold text-2xl uppercase transform skew-x-6 p5-shadow hover:bg-gray-300 transition-all">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-4 pointer-events-none"></div>
+
+    <!-- FIREBASE CLOUD STORAGE LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBGqY0l_B0bsOxnZ3jMC-4cwePXqj1c0O",
+            authDomain: "cv-tracker-2026.firebaseapp.com",
+            databaseURL: "https://cv-tracker-2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "cv-tracker-2026",
+            storageBucket: "cv-tracker-2026.firebasestorage.app",
+            messagingSenderId: "828628346082",
+            appId: "1:828628346082:web:ef719b36ec5b627991aabb",
+            measurementId: "G-1Y4Z2H33L1"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let unsubscribeSnapshot = null;
+        let cvData = [];
+        let itemToDeleteId = null;
+
+        const tableBody = document.getElementById('cvTableBody');
+        const emptyState = document.getElementById('emptyState');
+        const loadingState = document.getElementById('loadingState');
+        const searchInput = document.getElementById('searchInput');
+        const filterShip = document.getElementById('filterShip');
+        const filterStatus = document.getElementById('filterStatus');
+        
+        const networkStatus = document.getElementById('networkStatus');
+        const networkText = document.getElementById('networkText');
+        const networkIndicator = document.getElementById('networkIndicator');
+        const addNewBtn = document.getElementById('addNewBtn');
+        const emptyStateAddBtn = document.getElementById('emptyStateAddBtn');
+
+        const cvModal = document.getElementById('cvModal');
+        const deleteModal = document.getElementById('deleteModal');
+        const cvForm = document.getElementById('cvForm');
+        
+        const saveCvBtn = document.getElementById('saveCvBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const modalOverlay = document.getElementById('modalOverlay');
+
+        const idInput = document.getElementById('cvId');
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const phoneInput = document.getElementById('phoneNumber');
+        const emailInput = document.getElementById('email');
+        const positionInput = document.getElementById('position');
+        const shipInput = document.getElementById('ship');
+        const dateToMegaInput = document.getElementById('dateToMega');
+        const dateFromMegaInput = document.getElementById('dateFromMega');
+
+        const totalCvsCount = document.getElementById('totalCvsCount');
+        const pclCount = document.getElementById('pclCount');
+        const halCount = document.getElementById('halCount');
+        const vikingCount = document.getElementById('vikingCount');
+
+        const initAuth = async () => {
+            try {
+                await signInAnonymously(auth);
+            } catch (error) {
+                console.error("Auth failed", error);
+                setNetworkState('error');
+                showToast('Hack Failed', error.message || 'Could not penetrate the security walls.', 'error');
+            }
+        };
+
+        initAuth();
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                setNetworkState('online');
+                addNewBtn.disabled = false;
+                addNewBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                emptyStateAddBtn.classList.remove('hidden');
+                
+                setupRealtimeListener();
+            } else {
+                setNetworkState('offline');
+                if (unsubscribeSnapshot) unsubscribeSnapshot();
+                cvData = [];
+                renderTable();
+            }
+        });
+
+        function setupRealtimeListener() {
+            const cvsRef = collection(db, 'candidates');
+            
+            loadingState.classList.remove('hidden');
+            tableBody.parentElement.classList.add('hidden');
+            emptyState.classList.add('hidden');
+
+            unsubscribeSnapshot = onSnapshot(cvsRef, (snapshot) => {
+                cvData = [];
+                snapshot.forEach((doc) => {
+                    cvData.push({ id: doc.id, ...doc.data() });
+                });
+                
+                loadingState.classList.add('hidden');
+                updateStats();
+                renderTable();
+            }, (error) => {
+                console.error("Error fetching data: ", error);
+                showToast('Connection Lost', 'Real-time sync interrupted!', 'error');
+                setNetworkState('error');
+            });
+        }
+
+        function setNetworkState(state) {
+            networkStatus.classList.remove('opacity-50');
+            if(state === 'online') {
+                networkText.textContent = 'Cloud Sync Active';
+                networkIndicator.classList.add('bg-p5yellow');
+                networkIndicator.classList.remove('bg-p5red');
+                networkIndicator.style.animation = 'pulse-red 2s infinite';
+            } else if (state === 'offline' || state === 'error') {
+                networkText.textContent = 'Disconnected';
+                networkIndicator.classList.remove('bg-p5yellow');
+                networkIndicator.classList.add('bg-p5red');
+                networkIndicator.style.animation = 'none';
+            }
+        }
+
+        function formatDateDisplay(dateString) {
+            if (!dateString) return '<span class="text-gray-400 italic text-sm">NOT SET</span>';
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            const formatted = new Date(dateString).toLocaleDateString(undefined, options).toUpperCase();
+            return `<span class="bg-black text-white px-2 py-1 transform -skew-x-6 inline-block font-bold text-xs">${formatted}</span>`;
+        }
+
+        function getStatus(cv) {
+            if (cv.dateFromMega) {
+                return `<span class="inline-block bg-black text-white px-3 py-1 font-header italic text-lg uppercase border-2 border-p5red transform -skew-x-12 p5-shadow-red">Endorsed</span>`;
+            } else if (cv.dateToMega) {
+                return `<span class="inline-block bg-p5yellow text-black px-3 py-1 font-header italic text-lg uppercase border-2 border-black transform -skew-x-12 p5-shadow">Pending Mega</span>`;
+            } else {
+                return `<span class="inline-block bg-white text-black px-3 py-1 font-header italic text-lg uppercase border-2 border-black transform -skew-x-12 p5-shadow">New Target</span>`;
+            }
+        }
+
+        function renderTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const shipFilter = filterShip.value;
+            const statusFilter = filterStatus.value;
+
+            const filteredData = cvData.filter(cv => {
+                const fullName = `${cv.firstName} ${cv.lastName}`.toLowerCase();
+                const positionMatch = cv.position.toLowerCase().includes(searchTerm);
+                const nameMatch = fullName.includes(searchTerm);
+                const matchesSearch = nameMatch || positionMatch;
+                const matchesShip = shipFilter === 'All' || cv.ship === shipFilter;
+
+                let matchesStatus = true;
+                if (statusFilter !== 'All') {
+                    const isEndorsed = !!cv.dateFromMega;
+                    const isPending = !!cv.dateToMega && !cv.dateFromMega;
+                    if (statusFilter === 'Pending Mega') matchesStatus = isPending;
+                    if (statusFilter === 'Endorsed from Mega') matchesStatus = isEndorsed;
+                }
+                return matchesSearch && matchesShip && matchesStatus;
+            });
+
+            if (filteredData.length === 0) {
+                tableBody.innerHTML = '';
+                tableBody.parentElement.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                
+                if (cvData.length > 0) {
+                    emptyState.querySelector('h3').textContent = 'TARGET LOST';
+                    emptyState.querySelector('p').textContent = 'Adjust your investigation filters.';
+                } else {
+                    emptyState.querySelector('h3').textContent = 'PALACE IS EMPTY';
+                    emptyState.querySelector('p').textContent = 'Begin tracking your targets immediately.';
+                }
+            } else {
+                emptyState.classList.add('hidden');
+                tableBody.parentElement.classList.remove('hidden');
+                
+                let rowsHtml = '';
+                const sortedData = [...filteredData].sort((a, b) => b.createdAt - a.createdAt);
+
+                sortedData.forEach(cv => {
+                    const fullName = `${cv.lastName}, ${cv.firstName}`.toUpperCase();
+                    let shipColorStyle = 'bg-black text-white border-white';
+                    if (cv.ship === 'PCL') shipColorStyle = 'bg-blue-600 text-white border-black';
+                    if (cv.ship === 'HAL') shipColorStyle = 'bg-teal-600 text-white border-black';
+                    if (cv.ship === 'Viking Ocean') shipColorStyle = 'bg-cyan-600 text-white border-black';
+
+                    rowsHtml += `
+                        <tr class="hover:bg-gray-200 transition-colors border-b-4 border-black bg-white group">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-12 w-12 bg-black border-2 border-p5red transform rotate-45 flex items-center justify-center p5-shadow-red mr-4 group-hover:rotate-90 transition-transform duration-300">
+                                        <span class="text-white font-header italic text-xl transform -rotate-45 block group-hover:-rotate-90 transition-transform duration-300">
+                                            ${cv.firstName.charAt(0)}${cv.lastName.charAt(0)}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <div class="text-xl font-header italic font-black text-black transform -skew-x-6">${fullName}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+                                <div class="text-sm font-bold text-black bg-gray-100 px-2 py-1 border-l-4 border-black mb-1"><i class="fa-solid fa-phone text-p5red w-4 mr-1"></i> ${cv.phone}</div>
+                                <div class="text-sm font-bold text-black bg-gray-100 px-2 py-1 border-l-4 border-black"><i class="fa-solid fa-envelope text-p5red w-4 mr-1"></i> ${cv.email || '-'}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-lg font-bold text-black uppercase tracking-tight mb-2">${cv.position}</div>
+                                <span class="px-3 py-1 inline-block text-sm font-header italic uppercase border-2 transform -skew-x-6 p5-shadow ${shipColorStyle}">
+                                    ${cv.ship}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
+                                <div class="mb-2"><span class="text-xs font-bold text-gray-500 uppercase mr-1">TO:</span> ${formatDateDisplay(cv.dateToMega)}</div>
+                                <div><span class="text-xs font-bold text-gray-500 uppercase mr-1">FR:</span> ${formatDateDisplay(cv.dateFromMega)}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">${getStatus(cv)}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right font-medium border-l-4 border-black bg-gray-50">
+                                <button onclick="window.editCv('${cv.id}')" class="bg-black text-white px-3 py-2 font-header italic border-2 border-white p5-shadow hover:bg-white hover:text-black hover:border-black transition-colors mr-2 transform skew-x-6 text-lg" title="Edit">
+                                    <i class="fa-solid fa-pen-nib"></i>
+                                </button>
+                                <button onclick="window.confirmDelete('${cv.id}')" class="bg-p5red text-white px-3 py-2 font-header italic border-2 border-black p5-shadow hover:bg-black transition-colors transform -skew-x-6 text-lg" title="Delete">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tableBody.innerHTML = rowsHtml;
+            }
+        }
+
+        function updateStats() {
+            totalCvsCount.textContent = cvData.length;
+            pclCount.textContent = cvData.filter(cv => cv.ship === 'PCL').length;
+            halCount.textContent = cvData.filter(cv => cv.ship === 'HAL').length;
+            vikingCount.textContent = cvData.filter(cv => cv.ship === 'Viking Ocean').length;
+        }
+
+        function openAddModal() {
+            cvForm.reset();
+            idInput.value = '';
+            document.getElementById('modal-title').textContent = 'NEW INTEL';
+            const today = new Date().toISOString().split('T')[0];
+            dateToMegaInput.value = today;
+            cvModal.classList.remove('hidden');
+        }
+
+        function closeModals() {
+            cvModal.classList.add('hidden');
+            deleteModal.classList.add('hidden');
+            itemToDeleteId = null;
+            saveCvBtn.innerHTML = 'Save Intel';
+            saveCvBtn.disabled = false;
+            confirmDeleteBtn.innerHTML = 'Erase';
+            confirmDeleteBtn.disabled = false;
+        }
+
+        window.editCv = function(id) {
+            const cv = cvData.find(item => item.id === id);
+            if (cv) {
+                idInput.value = cv.id;
+                firstNameInput.value = cv.firstName;
+                lastNameInput.value = cv.lastName;
+                phoneInput.value = cv.phone;
+                emailInput.value = cv.email || '';
+                positionInput.value = cv.position;
+                shipInput.value = cv.ship;
+                dateToMegaInput.value = cv.dateToMega || '';
+                dateFromMegaInput.value = cv.dateFromMega || '';
+                
+                document.getElementById('modal-title').textContent = 'UPDATE INTEL';
+                cvModal.classList.remove('hidden');
+            }
+        };
+
+        window.confirmDelete = function(id) {
+            itemToDeleteId = id;
+            deleteModal.classList.remove('hidden');
+        };
+
+        async function saveCv() {
+            if (!cvForm.checkValidity()) {
+                cvForm.reportValidity();
+                return;
+            }
+            if (!currentUser) {
+                showToast('Error', 'Must be connected to the Metaverse!', 'error');
+                return;
+            }
+
+            saveCvBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Syncing...';
+            saveCvBtn.disabled = true;
+
+            const id = idInput.value;
+            const cvDataObj = {
+                firstName: firstNameInput.value.trim(),
+                lastName: lastNameInput.value.trim(),
+                phone: phoneInput.value.trim(),
+                email: emailInput.value.trim(),
+                position: positionInput.value.trim(),
+                ship: shipInput.value,
+                dateToMega: dateToMegaInput.value,
+                dateFromMega: dateFromMegaInput.value,
+            };
+
+            try {
+                const cvsRef = collection(db, 'candidates');
+                if (id) {
+                    const existingCv = cvData.find(c => c.id === id);
+                    cvDataObj.createdAt = existingCv ? existingCv.createdAt : Date.now();
+                    await setDoc(doc(cvsRef, id), cvDataObj);
+                    showToast('Mission Accomplished', 'Target data updated in the cloud!', 'success');
+                } else {
+                    cvDataObj.createdAt = Date.now();
+                    await addDoc(cvsRef, cvDataObj);
+                    showToast('Target Acquired', 'New intel secured in the cloud.', 'success');
+                }
+                closeModals();
+            } catch (error) {
+                console.error("Save error:", error);
+                showToast('Error', 'Failed to upload to the cloud.', 'error');
+                saveCvBtn.innerHTML = 'Save Intel';
+                saveCvBtn.disabled = false;
+            }
+        }
+
+        async function deleteCv() {
+            if (itemToDeleteId && currentUser) {
+                confirmDeleteBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Erasing...';
+                confirmDeleteBtn.disabled = true;
+                try {
+                    const cvsRef = collection(db, 'candidates');
+                    await deleteDoc(doc(cvsRef, itemToDeleteId));
+                    showToast('Target Erased', 'Evidence has been permanently removed from the cloud.', 'error');
+                    closeModals();
+                } catch (error) {
+                    console.error("Delete error:", error);
+                    showToast('Error', 'Failed to erase data.', 'error');
+                    confirmDeleteBtn.innerHTML = 'Erase';
+                    confirmDeleteBtn.disabled = false;
+                }
+            }
+        }
+
+        window.showToast = function(title, message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let bgClass = 'bg-black'; let borderClass = 'border-p5red';
+            let iconClass = 'fa-mask'; let iconColor = 'text-p5red';
+            
+            if(type === 'success') { iconClass = 'fa-check-double'; iconColor = 'text-p5yellow'; }
+            else if (type === 'error') { bgClass = 'bg-p5red'; borderClass = 'border-black'; iconClass = 'fa-skull'; iconColor = 'text-black'; }
+
+            toast.className = `toast-enter max-w-sm w-full ${bgClass} border-4 ${borderClass} p5-shadow p-4 transform -skew-x-2 pointer-events-auto relative overflow-hidden`;
+            toast.innerHTML = `
+                <div class="absolute -right-4 -bottom-4 opacity-20 transform rotate-12">
+                    <i class="fa-solid ${iconClass} text-6xl ${iconColor}"></i>
+                </div>
+                <div class="flex items-start relative z-10">
+                    <div class="flex-shrink-0 mt-1"><i class="fa-solid ${iconClass} ${iconColor} text-3xl transform -skew-x-6"></i></div>
+                    <div class="ml-4 w-0 flex-1">
+                        <p class="font-header italic text-2xl uppercase tracking-wider ${type === 'error' ? 'text-black' : 'text-white'}">${title}</p>
+                        <p class="mt-1 font-body font-bold text-sm ${type === 'error' ? 'text-white' : 'text-gray-300'}">${message}</p>
+                    </div>
+                </div>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.classList.replace('toast-enter', 'toast-leave');
+                    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 300);
+                }
+            }, 3500);
+        }
+
+        searchInput.addEventListener('input', renderTable);
+        filterShip.addEventListener('change', renderTable);
+        filterStatus.addEventListener('change', renderTable);
+        addNewBtn.addEventListener('click', openAddModal);
+        emptyStateAddBtn.addEventListener('click', openAddModal);
+        cancelBtn.addEventListener('click', closeModals);
+        modalOverlay.addEventListener('click', closeModals);
+        saveCvBtn.addEventListener('click', saveCv);
+        cancelDeleteBtn.addEventListener('click', closeModals);
+        confirmDeleteBtn.addEventListener('click', deleteCv);
+    </script>
+</body>
+</html>
